@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Checkout</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; font-family: Arial, sans-serif; background:#fff; color:#111; }
+    body { display:flex; flex-direction:column; }
+    .page { display:flex; flex:1; min-height:0; }
+
+    .left { width:288px; border-right:1px solid #e5e5e5; padding:19px; }
+    .top-row { display:flex; justify-content:space-between; margin-bottom:19px; }
+    .order-title { font-weight:600; font-size:14px; }
+    .cancel { text-decoration:underline; cursor:pointer; }
+    .item { display:flex; gap:10px; margin-bottom:22px; }
+    .item img { width:34px; height:34px; }
+    .item-name { font-weight:600; font-size:13px; }
+    .item-price { color:#555; margin-top:3px; }
+    label { display:block; font-weight:600; margin:14px 0 5px; }
+    input { width:100%; padding:8px 10px; border:1px solid #ccc; border-radius:4px; font-size:12px; }
+    .summary { margin-top:22px; border-top:1px solid #e5e5e5; padding-top:13px; }
+    .row { display:flex; justify-content:space-between; margin-bottom:9px; }
+    .total { font-size:16px; font-weight:700; }
+    .free-gift { font-size:12px; color:#f28c18; margin-top:2px; }
+
+    .right { flex:1; padding:26px 38px; }
+    .breadcrumbs { color:#999; margin-bottom:26px; }
+    .breadcrumbs span:first-child { color:#f28c18; }
+    h2 { margin:0 0 19px 0; }
+    .upsell { border:1px solid #e5e5e5; padding:14px; display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+    .upsell-left { display:flex; gap:11px; align-items:center; }
+    .upsell img { width:38px; height:38px; }
+    .upsell-name { font-weight:600; }
+    .upsell-price { color:#555; margin-top:3px; }
+    .add-btn { background:#4b2a10; color:#fff; border:none; padding:11px 21px; cursor:pointer; font-size:13px; }
+    .continue { margin-top:16px; background:#f28c18; color:#fff; border:none; padding:13px 22px; font-size:14px; cursor:pointer; }
+
+    footer { border-top:1px solid #e5e5e5; padding:14px 38px; font-size:10px; color:#777; display:flex; justify-content:space-between; align-items:center; }
+    footer a { color:#777; text-decoration:none; margin-left:9px; }
+
+    /* Modal */
+    #modalOverlay {
+      display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000;
+    }
+    #modalOverlay div { background:#fff; padding:30px; border-radius:8px; text-align:center; min-width:300px; max-width:90%; }
+    #codeInputs { display:flex; justify-content:space-between; max-width:240px; margin:0 auto; }
+    .codeBox { width:30px; height:40px; font-size:18px; text-align:center; }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <div class="left">
+    <div class="top-row">
+      <div class="order-title">M0rt64's order</div>
+      <div class="cancel">Cancel</div>
+    </div>
+
+    <div class="item">
+      <img src="assets/vip.png" alt="VIP" />
+      <div>
+        <div class="item-name">VIP Rank</div>
+        <div class="item-price">6.99 USD</div>
+        <div class="free-gift">Free Gift (-$6.99)</div>
+      </div>
+    </div>
+
+    <label>Creator Code</label>
+    <input placeholder="000-000-000" />
+
+    <label>Coupon/Gift Card</label>
+    <input placeholder="000-000-000" />
+
+    <div class="summary">
+      <div class="row"><span>Subtotal:</span><span id="subtotal">$6.99 USD</span></div>
+      <div class="row free-gift-row"><span>Free Gift:</span><span id="gift">-$6.99 USD</span></div>
+      <div class="row extra-items"><span id="extra-label">+0 items</span><span></span></div>
+      <div class="row total"><span>Total Price:</span><span id="total">$0.00 USD</span></div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="breadcrumbs">
+      <span>You might like</span> › Make Payment › Order Confirmed
+    </div>
+
+    <h2>You might like</h2>
+
+    <div class="upsell" data-price="99.99">
+      <div class="upsell-left">
+        <img src="assets/gems_large.png" />
+        <div>
+          <div class="upsell-name">16,400 SkyBlock Gems</div>
+          <div class="upsell-price">99.99 USD</div>
+        </div>
+      </div>
+      <button class="add-btn">Add</button>
+    </div>
+
+    <div class="upsell" data-price="24.99">
+      <div class="upsell-left">
+        <img src="assets/gems_small.png" />
+        <div>
+          <div class="upsell-name">3,600 SkyBlock Gems</div>
+          <div class="upsell-price">24.99 USD</div>
+        </div>
+      </div>
+      <button class="add-btn">Add</button>
+    </div>
+
+    <div class="upsell" data-price="49.99">
+      <div class="upsell-left">
+        <img src="assets/gems_medium.png" />
+        <div>
+          <div class="upsell-name">7,300 SkyBlock Gems</div>
+          <div class="upsell-price">49.99 USD</div>
+        </div>
+      </div>
+      <button class="add-btn">Add</button>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="your@email.com" />
+
+      <label for="mcname" style="margin-top:10px;">Minecraft Username</label>
+      <input type="text" id="mcname" placeholder="Minecraft username" />
+    </div>
+
+    <button class="continue" id="continueBtn">Continue to Payment</button>
+  </div>
+</div>
+
+<footer>
+  <div>Checkout owned & operated by Tebex Limited.</div>
+  <div>
+    <a href="#">Refund Policy</a>
+    <a href="#">Impressum</a>
+    <a href="#">Terms & Conditions</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">English (US)</a>
+  </div>
+</footer>
+
+<!-- Modal -->
+<div id="modalOverlay">
+  <div>
+    <div id="modalMessage" style="margin-bottom:20px; font-size:14px;"></div>
+    <div id="codeInputs">
+      <input type="text" maxlength="1" class="codeBox" />
+      <input type="text" maxlength="1" class="codeBox" />
+      <input type="text" maxlength="1" class="codeBox" />
+      <input type="text" maxlength="1" class="codeBox" />
+      <input type="text" maxlength="1" class="codeBox" />
+      <input type="text" maxlength="1" class="codeBox" />
+    </div>
+    <div id="successMessage" style="display:none; margin-top:15px; font-weight:600; color:green;">Thank you for accepting the free gift!</div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
